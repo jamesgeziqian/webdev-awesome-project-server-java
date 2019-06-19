@@ -1,50 +1,103 @@
 package com.example.webdevawesomeprojectserverjava.models;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import org.hibernate.validator.constraints.UniqueElements;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
+import javax.persistence.*;
+import java.util.List;
 
 @Entity
 public class User {
+    public User(String password, String email, Integer phone, List<User> followers, List<User> following) {
+        this.password = password;
+        this.email = email;
+        this.phone = phone;
+        this.followers = followers;
+        this.following = following;
+    }
 
-  @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private Integer id;
 
-  @UniqueElements
-  private String username;
-  private String password;
+    public User() {
+    }
 
-  public User() {}
+    public Integer getUserId() {
+        return userId;
+    }
 
-  public User(String username, String password) {
-    this.username = username;
-    this.password = password;
-  }
+    public void setUserId(Integer userId) {
+        this.userId = userId;
+    }
 
-  public Integer getId() {
-    return id;
-  }
+    public String getPassword() {
+        return password;
+    }
 
-  public void setId(Integer id) {
-    this.id = id;
-  }
+    public void setPassword(String password) {
+        this.password = password;
+    }
 
-  public String getUsername() {
-    return username;
-  }
+    public String getEmail() {
+        return email;
+    }
 
-  public void setUsername(String username) {
-    this.username = username;
-  }
+    public void setEmail(String email) {
+        this.email = email;
+    }
 
-  public String getPassword() {
-    return password;
-  }
+    public Integer getPhone() {
+        return phone;
+    }
 
-  public void setPassword(String password) {
-    this.password = password;
-  }
+    public void setPhone(Integer phone) {
+        this.phone = phone;
+    }
+
+    public List<User> getFollowers() {
+        return followers;
+    }
+
+    public void setFollowers(List<User> followers) {
+        this.followers = followers;
+    }
+
+    public List<User> getFollowing() {
+        return following;
+    }
+
+    public void setFollowing(List<User> following) {
+        this.following = following;
+    }
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    Integer userId;
+    String password;
+    String email;
+    Integer phone;
+
+    @ManyToMany(mappedBy = "following")
+    @JsonIgnore
+    List<User> followers;
+    @ManyToMany(mappedBy = "followers")
+    @JsonIgnore
+    @JoinTable(name = "FOLLOW_TABLE",
+            joinColumns = @JoinColumn(name = "userId",
+                    referencedColumnName = "follower_id"),
+            inverseJoinColumns = @JoinColumn(name =
+                    "userId", referencedColumnName = "following_id")
+
+    )
+    List<User> following;
+
+    public void addFollower(User user){
+        followers.add(user);
+        if(!user.following.contains(this)){
+            user.following.add(this);
+        }
+    }
+    public void addFollowing(User user){
+        following.add(user);
+        if(!user.followers.contains(this)){
+            user.followers.add(this);
+        }
+    }
 }

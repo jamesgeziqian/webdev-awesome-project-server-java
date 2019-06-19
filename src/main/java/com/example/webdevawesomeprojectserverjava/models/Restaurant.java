@@ -1,110 +1,68 @@
 package com.example.webdevawesomeprojectserverjava.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import java.util.List;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.ManyToMany;
-import javax.persistence.ManyToOne;
 
+import javax.persistence.*;
+import java.util.List;
 @Entity
 public class Restaurant {
+    @Id
+    String restaurantId;
 
-  @Id
-  private String yelpId;
+    public Restaurant(String restaurantId, Businessperson owner, List<Customer> favoringCustomers) {
+        this.restaurantId = restaurantId;
+        this.owner = owner;
+        this.favoringCustomers = favoringCustomers;
+    }
 
-  @ManyToOne
-  @JsonIgnore
-  private Restaurateur owner;
+    @ManyToOne
+    @JsonIgnore
+    Businessperson owner;
 
-  @ManyToMany(mappedBy = "favoredRestaurants")
-  @JsonIgnore
-  private List<Customer> regularCustomers;
+    public String getRestaurantId() {
+        return restaurantId;
+    }
 
-  private String address;
-  private String phone;
-  private String category;
-  private String transactions;
-  private String hours;
+    public void setRestaurantId(String restaurantId) {
+        this.restaurantId = restaurantId;
+    }
 
-  public Restaurant() {}
+    public Businessperson getOwner() {
+        return owner;
+    }
 
-  public Restaurant(String yelpId,
-      Restaurateur owner,
-      List<Customer> regularCustomers, String address, String phone, String category,
-      String transactions, String hours) {
-    this.yelpId = yelpId;
-    this.owner = owner;
-    this.regularCustomers = regularCustomers;
-    this.address = address;
-    this.phone = phone;
-    this.category = category;
-    this.transactions = transactions;
-    this.hours = hours;
-  }
+    public Restaurant() {
+    }
 
-  public String getYelpId() {
-    return yelpId;
-  }
+    public void setOwner(Businessperson owner) {
+        this.owner = owner;
+        if(!owner.getOwnedRestaurants().contains(this)){
+            owner.getOwnedRestaurants().add(this);
+        }
+    }
 
-  public void setYelpId(String yelpId) {
-    this.yelpId = yelpId;
-  }
+    public List<Customer> getFavoringCustomers() {
+        return favoringCustomers;
+    }
 
-  public Restaurateur getOwner() {
-    return owner;
-  }
+    public void setFavoringCustomers(List<Customer> favoringCustomers) {
+        this.favoringCustomers = favoringCustomers;
+    }
 
-  public void setOwner(Restaurateur owner) {
-    this.owner = owner;
-  }
+    @ManyToMany(mappedBy = "favoredRestaurants")
+    @JoinTable(name="FAVORITE_RESTAURANT_TABLE",
+            joinColumns=@JoinColumn(name="restaurantId",
+                    referencedColumnName="restaurant_id"),
+            inverseJoinColumns=@JoinColumn(name=
+                    "userId", referencedColumnName="customer_id"))
 
-  public List<Customer> getRegularCustomers() {
-    return regularCustomers;
-  }
+    @JsonIgnore
+    List<Customer> favoringCustomers;
 
-  public void setRegularCustomers(
-      List<Customer> regularCustomers) {
-    this.regularCustomers = regularCustomers;
-  }
-
-  public String getAddress() {
-    return address;
-  }
-
-  public void setAddress(String address) {
-    this.address = address;
-  }
-
-  public String getPhone() {
-    return phone;
-  }
-
-  public void setPhone(String phone) {
-    this.phone = phone;
-  }
-
-  public String getCategory() {
-    return category;
-  }
-
-  public void setCategory(String category) {
-    this.category = category;
-  }
-
-  public String getTransactions() {
-    return transactions;
-  }
-
-  public void setTransactions(String transactions) {
-    this.transactions = transactions;
-  }
-
-  public String getHours() {
-    return hours;
-  }
-
-  public void setHours(String hours) {
-    this.hours = hours;
-  }
+    public void addFavoringCustomer(Customer customer){
+        this.favoringCustomers.add(customer);
+        if(!customer.getFavoredRestaurants().contains(this)){
+            customer.getFavoredRestaurants().add(this);
+        }
+    }
 }

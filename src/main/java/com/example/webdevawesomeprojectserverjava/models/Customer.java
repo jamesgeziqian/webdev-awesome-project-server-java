@@ -1,37 +1,45 @@
 package com.example.webdevawesomeprojectserverjava.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import java.util.List;
-import javax.persistence.Entity;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
 
+import javax.persistence.Entity;
+import javax.persistence.ManyToMany;
+import javax.persistence.OneToMany;
+import java.util.List;
 @Entity
 public class Customer extends User {
 
-  @ManyToMany(mappedBy = "regularCustomers")
-  @JoinTable(name = "FAVORITES",
-      joinColumns = @JoinColumn(name = "CUSTOMER_ID", referencedColumnName = "ID"),
-      inverseJoinColumns = @JoinColumn(name = "RESTAURANT_ID", referencedColumnName = "ID"))
-  @JsonIgnore
-  private List<Restaurant> favoredRestaurants;
 
-  public Customer() {
-    super();
-  }
+   @ManyToMany(mappedBy="favoringCustomers")
+   @JsonIgnore
+   List<Restaurant> favoredRestaurants;
 
-  public Customer(String username, String password, List<Restaurant> favoredRestaurants) {
-    super(username, password);
-    this.favoredRestaurants = favoredRestaurants;
-  }
+   public List<Restaurant> getFavoredRestaurants() {
+      return favoredRestaurants;
+   }
 
-  public List<Restaurant> getFavoredRestaurants() {
-    return favoredRestaurants;
-  }
+   public void setFavoredRestaurants(List<Restaurant> favoredRestaurants) {
+      this.favoredRestaurants = favoredRestaurants;
+   }
 
-  public void setFavoredRestaurants(
-      List<Restaurant> favoredRestaurants) {
-    this.favoredRestaurants = favoredRestaurants;
-  }
+   public Customer(){
+      super();
+   }
+   public Customer(List<Restaurant> favoredRestaurants) {
+      super();
+      this.favoredRestaurants = favoredRestaurants;
+   }
+   public Customer(String password, String email, Integer phone, List<User> followers, List<User> following) {
+      super(password, email, phone, followers, following);
+   }
+   public Customer(String password, String email, Integer phone, List<User> followers, List<User> following, List<Restaurant> favoredRestaurants) {
+      super(password, email, phone, followers, following);
+      this.favoredRestaurants = favoredRestaurants;
+   }
+   public void addFavoriteRestaurant(Restaurant restaurant){
+      this.favoredRestaurants.add(restaurant);
+      if(!restaurant.favoringCustomers.contains(this)){
+         restaurant.favoringCustomers.add(this);
+      }
+   }
 }
