@@ -12,7 +12,7 @@ public class Restaurant {
     public Restaurant(String restaurantId, Businessperson owner, List<Customer> favoringCustomers) {
         this.restaurantId = restaurantId;
         this.owner = owner;
-//        this.favoringCustomers = favoringCustomers;
+        this.favoringCustomers = favoringCustomers;
     }
 
     @ManyToOne
