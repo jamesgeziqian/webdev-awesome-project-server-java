@@ -7,7 +7,7 @@ import java.util.List;
 
 @Entity
 public class User {
-    public User(String password, String email, Integer phone, List<User> followers, List<User> following) {
+    public User( String password, String email, Integer phone, List<User> followers, List<User> following) {
         this.password = password;
         this.email = email;
         this.phone = phone;
@@ -74,18 +74,17 @@ public class User {
     String email;
     Integer phone;
 
-    @ManyToMany(mappedBy = "following")
     @JsonIgnore
+    @ManyToMany(mappedBy = "following")
     List<User> followers;
-    @ManyToMany(mappedBy = "followers")
+
+
+
+    @ManyToMany
     @JsonIgnore
     @JoinTable(name = "FOLLOW_TABLE",
-            joinColumns = @JoinColumn(name = "userId",
-                    referencedColumnName = "follower_id"),
-            inverseJoinColumns = @JoinColumn(name =
-                    "userId", referencedColumnName = "following_id")
-
-    )
+            joinColumns = @JoinColumn(name = "follower_id"),
+            inverseJoinColumns = @JoinColumn(name="following_id"))
     List<User> following;
 
     public void addFollower(User user){

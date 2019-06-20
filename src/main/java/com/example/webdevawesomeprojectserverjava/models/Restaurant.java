@@ -12,7 +12,7 @@ public class Restaurant {
     public Restaurant(String restaurantId, Businessperson owner, List<Customer> favoringCustomers) {
         this.restaurantId = restaurantId;
         this.owner = owner;
-        this.favoringCustomers = favoringCustomers;
+//        this.favoringCustomers = favoringCustomers;
     }
 
     @ManyToOne
@@ -49,14 +49,9 @@ public class Restaurant {
         this.favoringCustomers = favoringCustomers;
     }
 
-    @ManyToMany(mappedBy = "favoredRestaurants")
-    @JoinTable(name="FAVORITE_RESTAURANT_TABLE",
-            joinColumns=@JoinColumn(name="restaurantId",
-                    referencedColumnName="restaurant_id"),
-            inverseJoinColumns=@JoinColumn(name=
-                    "userId", referencedColumnName="customer_id"))
 
     @JsonIgnore
+    @ManyToMany(mappedBy = "favoredRestaurants")
     List<Customer> favoringCustomers;
 
     public void addFavoringCustomer(Customer customer){

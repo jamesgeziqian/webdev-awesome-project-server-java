@@ -39,6 +39,6 @@ public class Businessperson extends User{
         }
     }
     @OneToMany(mappedBy = "owner")
-List<Restaurant> ownedRestaurants;
+    List<Restaurant> ownedRestaurants;
 
 }

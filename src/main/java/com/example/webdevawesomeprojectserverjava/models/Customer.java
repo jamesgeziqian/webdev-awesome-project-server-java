@@ -2,16 +2,17 @@ package com.example.webdevawesomeprojectserverjava.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
-import javax.persistence.Entity;
-import javax.persistence.ManyToMany;
-import javax.persistence.OneToMany;
+import javax.persistence.*;
 import java.util.List;
 @Entity
 public class Customer extends User {
 
 
-   @ManyToMany(mappedBy="favoringCustomers")
+   @ManyToMany
    @JsonIgnore
+   @JoinTable(name="FAVORITE_RESTAURANT_TABLE",
+           joinColumns=@JoinColumn(name="restaurant_id"),
+           inverseJoinColumns=@JoinColumn(name= "user_id"))
    List<Restaurant> favoredRestaurants;
 
    public List<Restaurant> getFavoredRestaurants() {
